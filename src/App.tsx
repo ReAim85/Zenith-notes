@@ -1,37 +1,29 @@
 import "./App.css";
-import { Button } from "./assets/ui/button";
-import { Sidebar } from "./assets/ui/sidebar";
-import { FaPlus, FaShareAlt } from "react-icons/fa";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { HomePage } from "./assets/pages/homePage";
+import { LoginPage } from "./assets/pages/loginPage";
+import { useAtomValue } from "jotai";
+import { IsLoggedIn} from "./assets/pages/Atoms";
+import type { AuthProps } from "./assets/ui/interface/Interfaces";
+import ProtectedRoute from "./assets/context/protectedRoute";
+import { AuthContext } from "./assets/context/AuthContext";
+import { SharedPage } from "./assets/pages/sharedPage";
 
-function App() {
+const AuthCheck = ({children}: AuthProps) => {
+  const isLoggedIn = useAtomValue(IsLoggedIn)
+  return isLoggedIn ? <Navigate to="/"/> : children
+}
+
+const App = () => {
+  AuthContext();
   return (
-    <div className="flex">
-      <div id="sidebar">
-        <Sidebar />
-      </div>
-      <div id="hero" className="w-[calc(100vw-200px)]">
-        <div id="top-bar" className="flex justify-between p-15">
-          <div className="text-3xl font-bold text-gray-800">All Notes</div>
-          <div className="flex gap-5">
-            <Button
-              text="Share Brain"
-              variant="secondary"
-              onClick={() => console.log("noting rn")}
-              size="md"
-              startIcon={<FaShareAlt />}
-            />
-            <Button
-              text="Add Content"
-              variant="primary"
-              onClick={() => console.log("noting rn")}
-              size="md"
-              startIcon={<FaPlus />}
-            />
-          </div>
-        </div>
-        <div id="top-bar"></div>
-      </div>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>}></Route>
+        <Route path="/login" element={<AuthCheck><LoginPage /></AuthCheck>}></Route>
+        <Route path="/brain/share/:BrainId" element={<SharedPage/>}></Route>
+      </Routes>
+    </Router>
   );
 }
 

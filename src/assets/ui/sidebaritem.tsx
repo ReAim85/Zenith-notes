@@ -1,4 +1,6 @@
-import type { ReactElement } from "react";
+import { type ReactElement } from "react";
+import { ContentTypeAtom, SwitchToCatogery } from "../pages/Atoms";
+import { useSetAtom } from "jotai";
 
 interface SidebarComponentProps {
   text: string;
@@ -7,13 +9,33 @@ interface SidebarComponentProps {
 }
 
 export const SidebarComponent = (props: SidebarComponentProps) => {
+  const setContentType = useSetAtom(ContentTypeAtom);
+  const setIsSharedCatogery =  useSetAtom(SwitchToCatogery)
+
+  // console.log(contentType);
   return (
     <div
       id="Sidebar-component"
-      className="flex items-center font-semibold text-xl text-gray-600 gap-3 cursor-pointer"
+      className="font-semibold text-2xl text-gray-600 cursor-pointer"
     >
-      {props.icon}
-      {props.text}
+      <div
+        className="flex items-center py-3 px-5 gap-2 w-80 hover:bg-gray-200"
+        onClick={() =>{
+          setContentType(
+            //just shut up its working >:)
+            props.text
+              .replace("s", "")
+              .replace("I", "i")
+              .replace("A", "a")
+              .replace("V", "v")
+          )
+          setIsSharedCatogery(true)
+          }
+        }
+      >
+        {props.icon}
+        {props.text}
+      </div>
     </div>
   );
 };
